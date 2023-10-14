@@ -1,0 +1,89 @@
+body {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#game-board {
+    /*
+    TODO: do it like this eventaully 
+    aspect-ratio: 1 / 1;
+    width: 40%; 
+    */
+    width: 360px;
+    height: 360px;
+
+    border: 10px solid black;
+
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#game-board img {
+    /* will have to change with js most likely  */
+    width: 118px;
+    /* board width / 3 - border left and right; 360 / 3 - 2 = 118 */
+    height: 118px;
+    border: 1px solid black;
+    text-indent: -10000000000px;
+}
+
+.checker-bg {
+    background-color: #e5e5f7;
+    display: inline-block;
+    /* opacity: 0.8; */
+    background-image: linear-gradient(whitesmoke 2px, transparent 2px), linear-gradient(90deg, whitesmoke 2px, transparent 2px), linear-gradient(whitesmoke 1px, transparent 1px), linear-gradient(90deg, whitesmoke 1px, #e5e5f7 1px);
+    background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+.shake {
+    animation: shake .5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+
+    20% {
+        transform: translate(3px, 0px) rotate(0deg);
+    }
+
+    30% {
+        transform: translate(-3px, 2px) rotate(1deg);
+    }
+
+    40% {
+        transform: translate(1px, -1px) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+
+    60% {
+        transform: translate(3px, 1px) rotate(0deg);
+    }
+
+    70% {
+        transform: translate(-2px, 0px) rotate(1deg);
+    }
+
+    80% {
+        transform: translate(1px, -1px) rotate(0deg);
+    }
+
+    90% {
+        transform: translate(-3px, 2px) rotate(-1deg);
+    }
+
+    100% {
+        transform: translate(1px, -2px) rotate(0deg);
+    }
+}
