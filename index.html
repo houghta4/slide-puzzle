@@ -6,19 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sliding Puzzle</title>
     <link rel="stylesheet" href="puzzle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="puzzle.js"></script>
 </head>
 
 <body>
-    <div id="game-board" class="checker-bg"></div>
-    <div id="testing">
-        Cut up image:
-        <div id="cut-container"></div>
-
+    <div class="instructions">
+        <h3>Upload an image to have it broken apart and randomized into tiles</h3>
+        <h3>Change the size to an N x N grid</h3>
+        <h3>Slide each tile around to put you picture back together</h3>
+        <h3>(Some layouts will not be solvable... so far)</h3>
     </div>
-    <h1>
+    <h3 id="turn-container" style="display: none">
         Turns: <span id="turns">0</span>
-    </h1>
+    </h3>
+    <div id="game-board" class="checker-bg" style="display: none"></div>
+
+    <div id="size-container" class="size-container" title="N x N size of puzzle">
+        <button id="minus" class="plus-minus" title="Decrease size of puzzle by one">-</button>
+        <input type="number" id="num" value="1" />
+        <button id="plus" class="plus-minus" title="Increase size of puzzle by one">+</button>
+    </div>
+    <div class="file-container">
+        <label class="file-upload">
+            <input id="file-select" type="file" name="file">
+            <i class="fa fa-cloud-upload"></i> &nbsp;Choose image
+        </label>
+    </div>
+
 </body>
 
 </html>
