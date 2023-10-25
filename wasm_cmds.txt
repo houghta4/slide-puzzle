@@ -1,0 +1,27 @@
+- Create rust lib
+cargo new wasm-bindgen-test --lib
+
+- Add wasm-bindgen
+cargo add wasm-bindgen
+cargo.toml -> {
+    [lib]
+    crate-type = ["cdylib"]
+
+    [dependencies]
+    wasm-bindgen = "0.2.87"
+}
+
+- Add js-sys
+cargo add js-sys
+
+- Add target if needed 
+rustup target add wasm32-unknown-unknown
+
+- Create wasm file
+cargo build --target wasm32-unknown-unknown
+
+- Install cli tool if needed
+cargo install -f wasm-bindgen-cli
+
+- Generate js package
+wasm-bindgen --target web --out-dir pkg ./target/wasm32-unknown-unknown/debug/wasm_bindgen_test.wasm

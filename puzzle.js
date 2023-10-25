@@ -1,3 +1,5 @@
+import init, { greet, pass_params, return_value_arraytype } from "./wasm-bindgen-test/pkg/wasm_bindgen_test.js";
+
 let ROWS = 1;
 let COLS = 1;
 
@@ -12,7 +14,9 @@ let imgVec = [];
  TODO: 
     Puzzle solver. Maybe rust wasm?
 */
-window.onload = () => {
+window.onload = async () => {
+    await init();
+    greet("Vince");
     const file = document.getElementById("file-select");
     const size = document.getElementById("num");
     const minus = document.getElementById("minus");
@@ -53,8 +57,6 @@ const onSizeChange = (value, image) => {
 const onTileClick = async (e) => {
     e.preventDefault();
     if (validateMove(e.target.id)) {
-        animateSwap(e)
-
         let childB = e.target;
         let childA = targetTile;
         const finalChildAStyle = {
@@ -146,10 +148,16 @@ const incTurns = () => {
     document.getElementById("turns").innerText = ++turns;
 }
 
+
+/*
+    TODO: Speed up. very slow on mobile
+*/
 const cutUpImage = (image) => {
     let imagePieces = [];
     let widthOfOnePiece = image.width / COLS;
     let heightOfOnePiece = image.height / ROWS;
+
+    // TODO: move the foreach logic into this loop
     for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
             let canvas = document.createElement('canvas');
@@ -162,6 +170,17 @@ const cutUpImage = (image) => {
     }
     // imagePieces now contains data urls of all the pieces of the image
     imgVec = Array.from(Array(imagePieces.length));
+
+    /* wasm testing */
+    // imgVec = [5, 6 ,7 ,8 ,9, 10, 11, 12, 13, 14];
+    // console.table(imgVec);
+    // pass_params(imgVec);
+    // let r = return_value_arraytype(imgVec);
+    // console.log("array [2] should be 101 = " + r);
+    // r[1] = 20;
+    // console.log("[1] should be 20 = " + r);
+    /*              */
+
     let tiles = [];
     imagePieces.forEach((p, i) => {
         let t = document.createElement("img");
@@ -176,6 +195,8 @@ const cutUpImage = (image) => {
         t.addEventListener("click", onTileClick);
         tiles.push(t);
     });
+
+    // TODO: verified shuffle with wasm (can always be solved)
     tiles.shuffle();
     let gameBoard = document.getElementById("game-board");
     for (let i = 0, k = 0; i < ROWS; i++) {
@@ -186,10 +207,6 @@ const cutUpImage = (image) => {
             gameBoard.append(tile);
         }
     }
-}
-
-const animateSwap = (e) => {
-
 }
 
 const onFileSelect = (e, image) => {
