@@ -1,4 +1,5 @@
-import init, { greet, pass_params, return_value_arraytype } from "./wasm-bindgen-test/pkg/wasm_bindgen_test.js";
+// import init, { greet, pass_params, return_value_arraytype } from "./wasm-bindgen-test/pkg/wasm_bindgen_test.js";
+import init, { is_solved, shuffle } from "./wasm-slide-puzzle/pkg/wasm_slide_puzzle.js";
 
 let ROWS = 1;
 let COLS = 1;
@@ -16,7 +17,6 @@ let imgVec = [];
 */
 window.onload = async () => {
     await init();
-    greet("Vince");
     const file = document.getElementById("file-select");
     const size = document.getElementById("num");
     const minus = document.getElementById("minus");
@@ -153,55 +153,40 @@ const incTurns = () => {
     TODO: Speed up. very slow on mobile
 */
 const cutUpImage = (image) => {
-    let imagePieces = [];
+    let tiles = [];
+    // console.log(ROWS, COLS);
     let widthOfOnePiece = image.width / COLS;
     let heightOfOnePiece = image.height / ROWS;
 
-    // TODO: move the foreach logic into this loop
     for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
+            let i = y * ROWS + x;
             let canvas = document.createElement('canvas');
             canvas.width = widthOfOnePiece;
             canvas.height = heightOfOnePiece;
             let context = canvas.getContext('2d');
             context.drawImage(image, x * widthOfOnePiece, y * heightOfOnePiece, widthOfOnePiece, heightOfOnePiece, 0, 0, canvas.width, canvas.height);
-            imagePieces.push(canvas.toDataURL());
+            let t = document.createElement("img");
+            if ( i !== ROWS * COLS - 1|| (ROWS === 1 && COLS === 1)) {
+                t.src = canvas.toDataURL();
+            } else {
+                targetTile = t;
+            }
+            t.setAttribute("data-id", i);
+            t.setAttribute("draggable", false);
+            t.addEventListener("click", onTileClick);
+            tiles.push(t);
         }
     }
-    // imagePieces now contains data urls of all the pieces of the image
-    imgVec = Array.from(Array(imagePieces.length));
-
-    /* wasm testing */
-    // imgVec = [5, 6 ,7 ,8 ,9, 10, 11, 12, 13, 14];
-    // console.table(imgVec);
-    // pass_params(imgVec);
-    // let r = return_value_arraytype(imgVec);
-    // console.log("array [2] should be 101 = " + r);
-    // r[1] = 20;
-    // console.log("[1] should be 20 = " + r);
-    /*              */
-
-    let tiles = [];
-    imagePieces.forEach((p, i) => {
-        let t = document.createElement("img");
-        if (i !== imagePieces.length - 1 || imagePieces.length === 1) {
-            t.src = p;
-        } else {
-            targetTile = t;
-        }
-
-        t.setAttribute("data-id", i);
-        t.setAttribute("draggable", false);
-        t.addEventListener("click", onTileClick);
-        tiles.push(t);
-    });
-
-    // TODO: verified shuffle with wasm (can always be solved)
-    tiles.shuffle();
+    // This could be one line if wasm assumed index always = value
+    imgVec = [...Array(tiles.length).keys()]
+    imgVec = shuffle(imgVec, ROWS);
+    // console.log("after shuffle");
     let gameBoard = document.getElementById("game-board");
     for (let i = 0, k = 0; i < ROWS; i++) {
         for (let j = 0; j < COLS; j++, k++) {
-            let tile = tiles[k];
+            let tile = tiles[imgVec[k]];
+            // let tile = tiles[k];
             imgVec[k] = tile.getAttribute("data-id");
             tile.id = "tile-" + i.toString() + "-" + j.toString();
             gameBoard.append(tile);
