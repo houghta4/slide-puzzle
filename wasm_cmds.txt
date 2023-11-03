@@ -25,3 +25,5 @@ cargo install -f wasm-bindgen-cli
 
 - Generate js package
 wasm-bindgen --target web --out-dir pkg ./target/wasm32-unknown-unknown/debug/wasm_bindgen_test.wasm
+
+wasm-bindgen --target web --out-dir pkg ./target/wasm32-unknown-unknown/debug/wasm_slide_puzzle.wasm

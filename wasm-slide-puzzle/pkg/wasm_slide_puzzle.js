@@ -15,6 +15,20 @@ function addHeapObject(obj) {
     return idx;
 }
 
+let cachedUint8Memory0 = null;
+
+function getUint8Memory0() {
+    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
+        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
+    }
+    return cachedUint8Memory0;
+}
+
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
+}
+
 function getObject(idx) { return heap[idx]; }
 
 function dropObject(idx) {
@@ -32,15 +46,6 @@ function takeObject(idx) {
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
-
-let cachedUint8Memory0 = null;
-
-function getUint8Memory0() {
-    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
-        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
-    }
-    return cachedUint8Memory0;
-}
 
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
@@ -87,6 +92,17 @@ export function shuffle(v, size) {
     return takeObject(ret);
 }
 
+/**
+* @param {Uint32Array} v
+* @returns {Array<any>}
+*/
+export function shuffle2(v) {
+    var ptr0 = passArray32ToWasm0(v, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    const ret = wasm.shuffle2(ptr0, len0, addHeapObject(v));
+    return takeObject(ret);
+}
+
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
 
 async function __wbg_load(module, imports) {
@@ -126,6 +142,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_number_new = function(arg0) {
         const ret = arg0;
         return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_copy_to_typed_array = function(arg0, arg1, arg2) {
+        new Uint8Array(getObject(arg2).buffer, getObject(arg2).byteOffset, getObject(arg2).byteLength).set(getArrayU8FromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_new_898a68150f225f2e = function() {
         const ret = new Array();

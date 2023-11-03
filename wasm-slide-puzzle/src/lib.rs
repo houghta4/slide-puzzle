@@ -1,3 +1,5 @@
+use std::usize;
+
 use js_sys::{Array, Math::random};
 use wasm_bindgen::prelude::*;
 
@@ -77,19 +79,70 @@ fn valid_move(tile_x: i32, tile_y: i32, target_x: i32, target_y: i32) -> bool {
     (tile_x == target_x || tile_y == target_y) && (x_valid || y_valid)
 }
 
+#[wasm_bindgen]
+pub fn shuffle2(v: &mut [usize]) -> Array {
+
+    let mut empty_tile_pos = v.len() - 1;
+    // fisher yates
+    for i in (1..v.len()).rev() {
+        let rng = js_sys::Math::random();
+        let j = (rng * (i as f64 + 1.0)) as usize;
+        v.swap(i, j);
+        if i == v.len() - 1{
+            empty_tile_pos = i;
+        }
+    }
+
+
+    v.iter().map(|&e|JsValue::from(e)).collect()
+}
+
+/*
+    To find if it is solvable, we need to use inversions. 
+    Inversions are just instances where a tile precedes another tile with a lower value
+
+    Checking solvability
+    If grid is odd -> inversions must be even
+    if grid is even and empty tile is in an odd row counting from the bottom -> inversions must be even
+    if grid is even and empty tile is in an even row counting from the bottom -> inversions must be odd
+ */
+#[allow(dead_code)]
+fn is_solvable(_inv: usize, _width: usize, _empty_tile_pos: usize) -> bool {
+
+    true
+}
+
+#[allow(dead_code)]
+fn count_inversions(v: &mut [i32]) -> usize {
+    let mut invs = 0;
+    let empty_tile = v.len() as i32;
+    for i in 0..v.len() {
+        if v[i] == empty_tile {
+            continue;
+        } 
+        for j in i + 1..v.len() {
+            if v[j] == empty_tile {
+                continue;
+            }
+            if v[i] > v[j] {
+                invs += 1;
+            }
+        }
+    }
+
+    invs
+}
+
 #[cfg(test)]
 mod tests {
     use crate::*;
 
-    #[test]
-    fn test_is_solved() {
-        assert_eq!(is_solved(vec![0, 1, 2, 3, 4]), true);
-        assert_eq!(is_solved(vec![0, 2, 3, 4]), false);
-    }
 
     #[test]
-    fn test_valid_move() {
-        assert_eq!(valid_move(0, 0, 1, 0), true);
-        assert_eq!(valid_move(0, 0, 2, 0), false);
+    fn test_inversions() {
+
+        let a = count_inversions(&mut [8, 7, 5, 1, 9, 4, 6, 2, 3]);
+        println!("{}", [8, 7, 5, 1, 9, 4, 6, 2, 3].len());
+        assert_eq!(a, 21);
     }
 }

@@ -11,6 +11,11 @@ export function is_solved(v: Int32Array): boolean;
 * @returns {Array<any>}
 */
 export function shuffle(v: Uint32Array, size: number): Array<any>;
+/**
+* @param {Uint32Array} v
+* @returns {Array<any>}
+*/
+export function shuffle2(v: Uint32Array): Array<any>;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -18,6 +23,7 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly is_solved: (a: number, b: number) => number;
   readonly shuffle: (a: number, b: number, c: number) => number;
+  readonly shuffle2: (a: number, b: number, c: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
 }
 
